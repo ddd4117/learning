@@ -181,3 +181,118 @@ Stack이 Vector를 상속하는 문제 참고
 >
 > 클래스를 상속하면 결합도로 인해 자식 클래스와 부모 클래스의 구현을 영원히 변경하지 않거나, 자식 클래스와 부모 클래스를 동시에 변경하거나 둘 중 하나를 선택할 수 밖에 없다.
 
+
+
+## 3. Phone 다시 살펴보기
+
+### 추상화에 의존하자
+
+자식 클래스가 부모 클래스의 구현이 아닌 추상화에 의존하도록 만드는 것이다.
+
+코드 중복을 제거하기 위해 상속을 도입할 때 따르는 두가지 원칙
+
+1. 두 메서드가 유사하게 보인다면 차이점을 메서드로 추출하라. 메서드 추출을 통해 두 메서드를 동일한 형태로 보이도록 만들 수 있다.
+2. 부모 클래스의 코드를 하위로 내리지 말고 자식 클래스의 코드를 상위로 올려라. 부모 클래스의 구체적인 메서드를 자식 클래스로 내리는 것보다 자식 클래스의 추상적인 메서드를 부모 클래스로 올리는 것이 재사용과 응집도 측면에서 더 뛰어난 결과를 얻을 수 있다.
+
+
+
+### 차이를 메서드로 추출하라
+
+​	**변하는 것으로부터 변하지 않는 것을 분리하라**, **변하는 부분을 찾고 이를 캡슐화 하라**
+
+### 
+
+### 중복 코드를 부모 클래스로 올려라
+
+Phone과 NightlyDiscountPhone이 AbstractPhone을 상속받도록 하자
+
+```java
+public abstract class AbstractPhone {
+    private List<Call> calls = new ArrayList<>();
+
+    public Money calculateFee() {
+        Money result = Money.ZERO;
+
+        for(Call call : calls) {
+            result = result.plus(calculateCallFee(call));
+        }
+
+        return result;
+    }
+
+    abstract protected Money calculateCallFee(Call call);
+}
+```
+
+
+
+이제 우리의 설계는 추상화에 의존하게 된다.
+
+"위로 올리기" 전략은 실패했더라도 수정하기 쉬운 문제를 발생시킨다.
+
+
+
+### 추상화가 핵심이다
+
+상속 계층의 코드를 진화시키는 데 걸림돌이 된다면 추상화를 찾아내고 상속 계층 안의 클래스들이 그 추상화에 의존하도록 코드를 리팩토링하라. 차이점을 메서드로 추출하고 공통적인 부분은 부모 클래스로 이동하라
+
+
+
+### 의도를 드러내는 이름 선택하기
+
+NightlyDiscountPhone은 심야할인요금제와 관련된 사실을 명확하게 전달하지만, Phone과 AbstractPhone은 그렇지 않다.
+
+그래서 Phone은 RegularPhone으로, AbstractPhone은 Phone으로 변경한다.
+
+
+
+### 세금 추가하기
+
+세금은 모든 요금제에 공통으로 적용되어야 한다. 따라서 추상 클래스인 Phone을 수정하면 모든 자식 클래스 간에 수정사항을 공유할 수 있다.
+
+```java
+public abstract class Phone {
+    private double taxRate;
+    private List<Call> calls = new ArrayList<>();
+
+    public Phone(double taxRate) {
+        this.taxRate = taxRate;
+    }
+
+    public Money calculateFee() {
+        Money result = Money.ZERO;
+
+        for(Call call : calls) {
+            result = result.plus(calculateCallFee(call));
+        }
+
+        return result.plus(result.times(taxRate));
+    }
+
+    protected abstract Money calculateCallFee(Call call);
+}
+```
+
+Phone에 taxRate 필드를 추가했고, 생성자를 추가했다. 그로인해 자식 클래스도 역시 초기화를 해야한다.
+
+이렇듯, 객체 행동만 변경된다면 독립적으로 진화시킬 수 있다. 하지만 인스턴스 변수가 추가되는 경우에는 자식 전반에 걸쳐 수정이 일어난다.
+
+하지만 초기화 로직을 변경하는 것이 세금 계산 코드를 중복시키는 것보다 현명하다.
+
+우리가 원하는 것은 행동을 변경하기 위해 인스턴스 변수를 추가하더라도 상속 계층 전체에 걸쳐 부작용이 퍼지지 않게 하는 것이다.
+
+## 
+
+## 4. 차이에 의한 프로그래밍
+
+기존 코드와 다른 부분만을 추가함으로써 애플리케이션의 기능을 확장하는 방법을 **차이에 의한 프로그래밍(programming by difference)**
+
+목표는 중복 코드를 제거하고 코드를 재사용하는 것이다.
+
+
+
+상속은 매력적인 도구이지만, 너무 취해서 모든 설계에 상속을 적용하는 것은 지양해야한다.
+
+**<u>정말로 필요한 경우에만 상속을 사용해라</u>**
+
+**상속보다 좋은 방법이 합성이다. 잊지마라!**
