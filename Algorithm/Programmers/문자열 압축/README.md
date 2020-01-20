@@ -2,19 +2,19 @@
 
 먼저 String이다.
 
-![String](./img/string.png)
+![String](./img/String.png)
 
 
 
 그 다음은 StringBuilder이다.
 
-![StringBuilder](./img/stringBuilder.png)
+![StringBuilder](./img/StringBuilder.png)
 
 
 
 마지막으로 StringBuffer이다.
 
-![StringBuffer](./img/stringBuffer.png)
+![StringBuffer](./img/StringBuffer.png)
 
 
 
