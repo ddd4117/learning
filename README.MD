@@ -1,19 +1,19 @@
-:bookmark:[Algorithm](https://github.com/ddd4117/learning/tree/master/Algorithm)
+:bookmark:[Algorithm](./Algorithm)
 
-:bookmark:[Spring](https://github.com/ddd4117/learning/tree/master/Spring)
+:bookmark: [Computer Science](./CS)
 
-:bookmark:[Object Study[객체지향]](https://github.com/ddd4117/learning/tree/master/Object)
+:bookmark:[Docker](./Docker/gitlab)
 
-:bookmark:[Computer Science](https://github.com/ddd4117/learning/tree/master/CS)
+:bookmark:[ELK](./ELK)
 
-:bookmark:[Docker](https://github.com/ddd4117/learning/tree/master/Docker/gitlab)
+:bookmark:[JAVA](./JAVA)
 
-:bookmark:[ELK](https://github.com/ddd4117/learning/tree/master/ELK)
+:bookmark:[Message Queue](./Message%20Queue)
 
-:bookmark:[JAVA](https://github.com/ddd4117/learning/tree/master/JAVA)
+:bookmark:[Object Study[객체지향]](./Object)
 
-:bookmark:[Message Queue](https://github.com/ddd4117/learning/tree/master/Message Queue)
+:bookmark:[REST API란](./REST%20API)
 
-:bookmark:[REST API란](https://github.com/ddd4117/learning/tree/master/REST API))
+:bookmark:[Spring](./Spring)
 
-:bookmark:[SQL](https://github.com/ddd4117/learning/tree/master/SQL)
+:bookmark:[SQL](./SQL)
