@@ -96,7 +96,7 @@ Survivor 영역이 2개이기 때문에 총 3개의 영역으로 나뉜다.
 
 ### Serial GC(-XX:+UserSerialGC)
 
-Young 영역에서는 앞에서 기술한 방식을 사용, Old 영역에서는 mark-sweep-compact 알고리즘 사요ㅕㅇ한다.
+Young 영역에서는 앞에서 기술한 방식을 사용, Old 영역에서는 mark-sweep-compact 알고리즘 사용한다.
 
 1. Old 영역에서 살아 있는 객체를 식별(Mark)
 2. 힙(Heap)의 앞 부분부터 확인하여 살아 있는것만 남긴다(Sweep)
