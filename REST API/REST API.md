@@ -26,7 +26,7 @@
     - **확장 가능한 커뮤니케이션**
   - hypermisa as the engine of application state(HATEOAS)
     - 하이퍼 미디어(링크)를 통해 애플리케이션 상태 변화가 가능해야 한다
-    - 링크 정보를 도엊그올 바꿀수 있다.(Versioning 할 필요 없다)
+    - 링크 정보를 동적으로 바꿀수 있다.(Versioning 할 필요 없다)
 
   
 
