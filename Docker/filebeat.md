@@ -2,9 +2,7 @@
 
 ![filebeat](https://user-images.githubusercontent.com/28971015/84012009-dc62f600-a9b1-11ea-9f30-26cd704782de.png)
 
-
-
-1. Dockerfile 작성
+## 1. Dockerfile 작성
 
 ```dockerfile
 FROM docker.elastic.co/beats/filebeat:7.4.2
@@ -19,7 +17,7 @@ RUN chmod -R go-w /usr/share/filebeat/
 
 filebeat의 공식 이미지를 가져와서 내가 작성한 filebeat.yml 설정으로 덮어쓰고 디렉토리에 대한 권한을 줍니다
 
-2. filebeat.yml 작성
+## 2. filebeat.yml 작성
 
 ```yaml
 filebeat.inputs:
@@ -52,7 +50,7 @@ output.elasticsearch:
   이 때 주의할 점은 `/var/log/*/*.log` 형식으로 작성해야 한다. `/var/log`는 폴더 자체를 의미하한다.
   `/var/**/*.log`으로 활용할 수도 있다. 세부 설정은 공식 홈페이지를 확인하자.
 
-3. Build
+## 3. Build
 
 ```shell
 $ docker build --tag filebeat .
@@ -87,7 +85,7 @@ build를 하면 image가 생성된 것을 확인할 수 있다.
 
 
 
-4. docker-compose.yml 작성
+## 4. docker-compose.yml 작성
 
 ```yaml
 version: "3.7"
@@ -106,7 +104,7 @@ volumes에서 host의 log와 마운트 해준다.
 
 
 
-5. 실행
+## 5. 실행
 
 ```shell
 $ docker-compose up
@@ -154,3 +152,67 @@ services:
       - /c/logs/c.log:/usr/share/filebeat/dockerlogs/c.log:z
 ```
 
+## 
+
+## 아카이빙 될 경우
+
+파일이 아카이빙 되고 파일을 새로 만들 경우 docker volume에서 읽지 못하는 현상이 있었다.
+
+File단위의 마운팅 말고 Directory 단위의 마운팅을 통해 해결했다.
+
+- docker-compose 파일
+
+```yml
+version: "3.7"
+services:
+  filebeat:
+    image: filebeat
+    command: filebeat -e -strict.perms=false
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - /a/logs/:/usr/share/filebeat/dockerlogs/a/:z
+      - /b/logs/:/usr/share/filebeat/dockerlogs/b/:z
+      - /c/logs/:/usr/share/filebeat/dockerlogs/c/:z
+```
+
+- filebeat.yml 파일
+
+```yaml
+filebeat.inputs:
+  - type: log
+  # Change to true to enable this input configuration.
+    enabled: true
+
+    # Paths that should be crawled and fetched. Glob based paths.
+    paths:
+      - /usr/share/filebeat/dockerlogs/*/*.log #이 부분 수정
+
+output.elasticsearch:
+   hosts: [elasticsearch ip : port]
+   template:
+   
+#output.logstash:
+#   host: [logstash ip:port]
+```
+
+### 아키이빙된  파일 읽지 않게 하기
+
+`/a/logs/archive` `/b/logs/archive` `/c/logs/archive`에 아카이빙된 파일들이 저장된다고 할 때
+
+```
+version: "3.7"
+services:
+  filebeat:
+    image: filebeat
+    command: filebeat -e -strict.perms=false
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - /a/logs/:/usr/share/filebeat/dockerlogs/a/:z
+      - /usr/share/filebeat/dockerlogs/a/archive/
+      - /b/logs/:/usr/share/filebeat/dockerlogs/b/:z
+      - /usr/share/filebeat/dockerlogs/b/archive/
+      - /c/logs/:/usr/share/filebeat/dockerlogs/c/:z
+      - /usr/share/filebeat/dockerlogs/c/archive/
+```
+
+로 마운팅을 해제해주면 된다.
